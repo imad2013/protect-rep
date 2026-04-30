@@ -91,7 +91,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         if self.path == '/api/stats':
             stats = get_event_stats()
             self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
             self.wfile.write(json.dumps(stats, indent=2).encode())
@@ -103,6 +103,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
     <title>Data Protection Dashboard</title>
     <style>
         body {{ font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }}
@@ -170,9 +171,9 @@ class DashboardHandler(BaseHTTPRequestHandler):
             """
             
             self.send_response(200)
-            self.send_header('Content-Type', 'text/html')
+            self.send_header('Content-Type', 'text/html; charset=utf-8')
             self.end_headers()
-            self.wfile.write(html.encode())
+            self.wfile.write(html.encode('utf-8'))
         else:
             self.send_response(404)
             self.end_headers()

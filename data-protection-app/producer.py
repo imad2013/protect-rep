@@ -7,6 +7,7 @@ policy violations, data transfers, etc.) that should be processed and stored.
 
 import json
 import os
+import sys
 import time
 import random
 import uuid
@@ -19,6 +20,9 @@ RABBITMQ_PORT = int(os.environ.get('RABBITMQ_PORT', '5672'))
 RABBITMQ_USER = 'dataprotection'
 RABBITMQ_PASS = 'dataprotection'
 QUEUE_NAME = 'data_protection_events'
+
+# If set (integer), publish this many events and exit — used by run_reproduction.sh
+PRODUCER_MAX_EVENTS_RAW = os.environ.get('PRODUCER_MAX_EVENTS')
 
 EVENT_TYPES = [
     'file_access',
@@ -57,6 +61,14 @@ def generate_event():
 
 def main():
     """Main producer loop."""
+    max_events = None
+    if PRODUCER_MAX_EVENTS_RAW:
+        try:
+            max_events = int(PRODUCER_MAX_EVENTS_RAW)
+        except ValueError:
+            print(f"ERROR: PRODUCER_MAX_EVENTS must be an integer, got {PRODUCER_MAX_EVENTS_RAW!r}")
+            sys.exit(1)
+
     print(f"[*] Connecting to RabbitMQ at {RABBITMQ_HOST}:{RABBITMQ_PORT}")
     
     credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)
@@ -75,7 +87,10 @@ def main():
     channel.queue_declare(queue=QUEUE_NAME, durable=True)
     
     print(f"[*] Publishing events to queue '{QUEUE_NAME}'")
-    print("[*] Press Ctrl+C to stop")
+    if max_events is not None:
+        print(f"[*] Will stop after {max_events} events (PRODUCER_MAX_EVENTS)")
+    else:
+        print("[*] Press Ctrl+C to stop")
     
     count = 0
     start_time = time.time()
@@ -98,6 +113,10 @@ def main():
             )
             
             count += 1
+            
+            if max_events is not None and count >= max_events:
+                print(f"\n[*] Reached PRODUCER_MAX_EVENTS={max_events}. Done.")
+                break
             
             if count % 10 == 0:
                 elapsed = time.time() - start_time
