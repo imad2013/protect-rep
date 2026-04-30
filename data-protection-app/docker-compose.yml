@@ -1,12 +1,10 @@
-version: '3.8'
-
 services:
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: dp_rabbitmq
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "${RABBITMQ_HOST_PORT:-5672}:5672"
+      - "${RABBITMQ_MANAGEMENT_HOST_PORT:-15672}:15672"
     environment:
       RABBITMQ_DEFAULT_USER: dataprotection
       RABBITMQ_DEFAULT_PASS: dataprotection
@@ -22,7 +20,7 @@ services:
     image: postgres:15-alpine
     container_name: dp_postgres
     ports:
-      - "5432:5432"
+      - "${POSTGRES_HOST_PORT:-5432}:5432"
     environment:
       POSTGRES_DB: dataprotection
       POSTGRES_USER: dataprotection

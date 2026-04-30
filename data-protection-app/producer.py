@@ -6,6 +6,7 @@ policy violations, data transfers, etc.) that should be processed and stored.
 """
 
 import json
+import os
 import time
 import random
 import uuid
@@ -13,8 +14,8 @@ from datetime import datetime, timedelta
 import pika
 
 # Configuration
-RABBITMQ_HOST = 'localhost'
-RABBITMQ_PORT = 5672
+RABBITMQ_HOST = os.environ.get('RABBITMQ_HOST', 'localhost')
+RABBITMQ_PORT = int(os.environ.get('RABBITMQ_PORT', '5672'))
 RABBITMQ_USER = 'dataprotection'
 RABBITMQ_PASS = 'dataprotection'
 QUEUE_NAME = 'data_protection_events'

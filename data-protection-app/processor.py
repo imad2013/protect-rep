@@ -14,6 +14,7 @@ The bugs are:
 """
 
 import json
+import os
 import time
 import logging
 import psycopg2
@@ -29,14 +30,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Configuration
-RABBITMQ_HOST = 'localhost'
-RABBITMQ_PORT = 5672
+RABBITMQ_HOST = os.environ.get('RABBITMQ_HOST', 'localhost')
+RABBITMQ_PORT = int(os.environ.get('RABBITMQ_PORT', '5672'))
 RABBITMQ_USER = 'dataprotection'
 RABBITMQ_PASS = 'dataprotection'
 QUEUE_NAME = 'data_protection_events'
 
-DB_HOST = 'localhost'
-DB_PORT = 5432
+DB_HOST = os.environ.get('DB_HOST', '127.0.0.1')
+DB_PORT = int(os.environ.get('POSTGRES_HOST_PORT', os.environ.get('DB_PORT', '5432')))
 DB_NAME = 'dataprotection'
 DB_USER = 'dataprotection'
 DB_PASS = 'dataprotection'

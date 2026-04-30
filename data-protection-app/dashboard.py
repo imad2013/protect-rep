@@ -7,12 +7,13 @@ even though the processor is running and messages are being sent.
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
+import os
 import psycopg2
 from datetime import datetime, timedelta
 
 # Configuration
-DB_HOST = 'localhost'
-DB_PORT = 5432
+DB_HOST = os.environ.get('DB_HOST', '127.0.0.1')
+DB_PORT = int(os.environ.get('POSTGRES_HOST_PORT', os.environ.get('DB_PORT', '5432')))
 DB_NAME = 'dataprotection'
 DB_USER = 'dataprotection'
 DB_PASS = 'dataprotection'
