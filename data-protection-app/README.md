@@ -1,5 +1,7 @@
 # Data Protection Dashboard - Issue Reproduction
 
+**How to run the stack, configure ports, and walk through scenarios:** see [USER_GUIDE.md](USER_GUIDE.md).
+
 This application reproduces the issue where:
 - Data protection dashboard shows zero events
 - Python event-processor service is running
